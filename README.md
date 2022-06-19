@@ -3,14 +3,7 @@
 The Marr-Hildreth algorithm implemented in Python with NumPy.
 For educational purposes.
 
-<img src="lena.jpg" alt="Lena"/>
-<img src="edges.jpg" alt="Lena edges"/>
+<img src="lena.jpg" alt="Lena" width="300"/>|
+<img src="edges.jpg" alt="Lena edges" width="300"/>
 
-<style>
-img{
-    float: left;
-    margin-right: 10px;
-    height: 300px;
-    width: 300px;
-}
-</style>
+Source: [https://en.wikipedia.org/wiki/Marr%E2%80%93Hildreth_algorithm](https://en.wikipedia.org/wiki/Marr%E2%80%93Hildreth_algorithm)
