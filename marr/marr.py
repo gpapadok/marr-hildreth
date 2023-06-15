@@ -188,7 +188,7 @@ def main():
         out = args.output
     else:
         split_input = args.input.split(".")
-        out = "".join(split_input[:-1]) + "_edges" + split_input[-1]
+        out = "".join(split_input[:-1]) + "_edges." + split_input[-1]
     cv2.imwrite(out, edges)
 
 
