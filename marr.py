@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+import argparse
+
 import cv2
 import numpy as np
 
@@ -23,12 +25,16 @@ def convolve(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     """
     krows, kcols = kernel.shape
     rows, cols = image.shape
-   
-    padded = np.pad(image, (krows//2, kcols//2), mode='constant')
-    stacked = np.array([
-        np.ravel(padded[i:i+krows, j:j+kcols])
-        for i in range(rows) for j in range(cols)
-    ], dtype=np.float32)
+
+    padded = np.pad(image, (krows // 2, kcols // 2), mode="constant")
+    stacked = np.array(
+        [
+            np.ravel(padded[i : i + krows, j : j + kcols])
+            for i in range(rows)
+            for j in range(cols)
+        ],
+        dtype=np.float32,
+    )
 
     conv = (stacked @ np.ravel(kernel)).reshape(rows, cols)
     return conv
@@ -67,8 +73,8 @@ def gaussian_kernel(sigma: float) -> np.ndarray:
 
     X, Y = np.meshgrid(x, x)
 
-    kernel = np.exp(-(X ** 2 + Y ** 2) / (2 * sigma ** 2))
-    kernel = kernel / (2 * np.pi * sigma ** 2)
+    kernel = np.exp(-(X**2 + Y**2) / (2 * sigma**2))
+    kernel = kernel / (2 * np.pi * sigma**2)
 
     return kernel
 
@@ -142,14 +148,49 @@ def marrhildreth(
     blurred = convolve(image, g_kernel)
 
     laplacian = convolve(blurred, laplacian_kernel)
-   
+
     edges = zero_crossing(laplacian, threshold=threshold)
     return edges
 
 
+def main():
+    parser = argparse.ArgumentParser(
+        prog="marr",
+        description="Marr-Hildreth edge detection algorithm.",
+        epilog="More info: https://github.com/gpapadok/marr-hildreth",
+    )
+    parser.add_argument("input", help="input file path")
+    parser.add_argument("-o", "--output", metavar="<file>", help="output file path")
+    parser.add_argument(
+        "-s",
+        "--sigma",
+        default=3.5,
+        type=float,
+        metavar="<float>",
+        help="gaussian kernel sigma value, more sensitivity for smaller values (<=5.0 default: 2.5)",
+    )
+    parser.add_argument(
+        "-t",
+        "--threshold",
+        default=0.7,
+        type=float,
+        metavar="<float>",
+        help="zero crossing threshold value, bigger values yield less sensitive edge detection (default: 0.7)",
+    )
+
+    args = parser.parse_args()
+
+    lena = cv2.imread(args.input, 0)
+
+    edges = marrhildreth(lena, sigma=args.sigma, threshold=args.threshold)
+
+    if args.output:
+        out = args.output
+    else:
+        split_input = args.input.split(".")
+        out = "".join(split_input[:-1]) + "_edges" + split_input[-1]
+    cv2.imwrite(out, edges)
+
+
 if __name__ == "__main__":
-    lena = cv2.imread("./lena.jpg", 0)
-   
-    edges = marrhildreth(lena, sigma=3.5, threshold=0.7)
-   
-    cv2.imwrite("edges.jpg", edges)
+    main()
