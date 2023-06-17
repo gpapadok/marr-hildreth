@@ -10,9 +10,9 @@ Install with:
 
 Run:
 
-```marr lena.jpg```
+```marr lena.jpg --sigma 2.5 --threshold 0.7```
 
-Can be slow for large images and large value of sigma.
+Note: Marr-hildreth is an outdated algorithm and this implementation is inefficient for large images or large values of sigma of the Gaussian. Purely for educational purposes.
 
 <img src="lena.jpg" alt="Lena" width="300"/>|
 <img src="edges.jpg" alt="Lena edges" width="300"/>
