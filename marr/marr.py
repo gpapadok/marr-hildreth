@@ -14,8 +14,8 @@ def convolve(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     First it unravels each block of the image and stacks it in a (N*M, Kn*Km)
     matrix (where NxM and KnxKm are the dimensions of the image and kernel
     respectively). Then multiplies it with the kernel unraveled into a vector.
-    This method is much more efficient that naively iterating through each block
-    of the image.
+    This method is much more time efficient that iterating through each block
+    of the image but less space efficient.
     Examples:
     >>> a = np.array([[0,0,255],[0,0,255],[0,0,255]])
     >>> convolve(a, a)
