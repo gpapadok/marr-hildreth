@@ -180,9 +180,9 @@ def main():
 
     args = parser.parse_args()
 
-    lena = cv2.imread(args.input, 0)
+    img = cv2.imread(args.input, 0)
 
-    edges = marrhildreth(lena, sigma=args.sigma, threshold=args.threshold)
+    edges = marrhildreth(img, sigma=args.sigma, threshold=args.threshold)
 
     if args.output:
         out = args.output
