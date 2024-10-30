@@ -139,7 +139,7 @@ def marrhildreth(
     Source: https://en.wikipedia.org/wiki/Marr%E2%80%93Hildreth_algorithm
     Examples:
     >>> a = np.array([[0,0,255],[0,0,255],[0,0,255]])
-    >>> marr_hildreth(a)
+    >>> marrhildreth(a)
     array([[  0, 255,   0],
            [  0, 255,   0],
            [  0, 255,   0]], dtype=uint8)
