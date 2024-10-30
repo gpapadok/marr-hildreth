@@ -11,11 +11,13 @@ laplacian_kernel = np.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]])
 def convolve(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     """
     The convolution operation.
+    For small images we use a fast implementation:
     First it unravels each block of the image and stacks it in a (N*M, Kn*Km)
     matrix (where NxM and KnxKm are the dimensions of the image and kernel
     respectively). Then multiplies it with the kernel unraveled into a vector.
     This method is much more time efficient that iterating through each block
     of the image but less space efficient.
+    For larger images we use a more traditional iterative approach.
     Examples:
     >>> a = np.array([[0,0,255],[0,0,255],[0,0,255]])
     >>> convolve(a, a)
@@ -27,16 +29,23 @@ def convolve(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     rows, cols = image.shape
 
     padded = np.pad(image, (krows // 2, kcols // 2), mode="constant")
-    stacked = np.array(
-        [
-            np.ravel(padded[i : i + krows, j : j + kcols])
-            for i in range(rows)
-            for j in range(cols)
-        ],
-        dtype=np.float32,
-    )
+    conv = np.empty_like(image, dtype=np.float32)
+    if rows * cols < 2**20:  # Fast convolution for small images
+        stacked = np.array(
+            [
+                np.ravel(padded[i : i + krows, j : j + kcols])
+                for i in range(rows)
+                for j in range(cols)
+            ],
+            dtype=np.float32,
+        )
 
-    conv = (stacked @ np.ravel(kernel)).reshape(rows, cols)
+        conv = (stacked @ np.ravel(kernel)).reshape(rows, cols)
+    else:  # Memory efficient convolution for large images
+        for i in range(rows - krows // 2):
+            for j in range(cols - kcols // 2):
+                conv[i][j] = np.sum(padded[i : i + krows, j : j + kcols] * kernel)
+
     return conv
 
 
